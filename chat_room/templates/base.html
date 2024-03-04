@@ -34,7 +34,7 @@
           <!-- Title -->
           <span class="mdl-layout-title">
             {% if request.user.is_authenticated %} Welcome,
-            {{request.user.username}} {% else%} welcome, Please log in
+            {{request.user.username}} {% else%} Welcome, Please log in.
             {%endif%}
           </span>
           <!-- Add spacer, to align navigation to the right -->
@@ -59,40 +59,10 @@
                 Login
               </button></a
             >
-
             {% endif %}
           </nav>
         </div>
       </header>
-      <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Chat Room</span>
-        <nav class="mdl-navigation">
-          <a href="#">
-            <button
-              type="submit"
-              class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-            >
-              Chat Room 1
-            </button></a
-          >
-          <a href="#">
-            <button
-              type="submit"
-              class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-            >
-              Chat Room 2
-            </button></a
-          >
-          <a href="#">
-            <button
-              type="submit"
-              class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-            >
-              Chat Room 3
-            </button></a
-          >
-        </nav>
-      </div>
       <main class="mdl-layout__content">
         <div class="page-content">{% block content %} {% endblock %}</div>
       </main>

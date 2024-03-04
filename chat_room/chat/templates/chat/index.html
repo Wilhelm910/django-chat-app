@@ -12,6 +12,7 @@
   </div>
   {% endfor %}
 </div>
+
 <style>
   .message-field {
     display: flex;
@@ -48,6 +49,7 @@
     font-weight: 500;
     width: 200px;
     padding: 4px;
+    white-space: normal;
   }
 
   .date-field {
@@ -71,30 +73,14 @@
     fd.append("csrfmiddlewaretoken", token);
     try {
       if (messagefield.value) {
-        messageContainer.innerHTML += `
-        <div id="deleteMessage" class="color-grey message
-        {% if message.author == request.user %}from-current-user{% endif %} {% if message.author != request.user %}not-from-current-user{% endif %}">
-          <div class="message-field">
-            <span class="author-field">
-              {{request.user.username}}:
-            </span>
-            <i class="text-field">
-              &nbsp; ${messagefield.value}</i>
-          </div>
-          <div class="date-field">
-            [DATUM]
-          </div>
-        </div>
-  `;
+        messageContainer.innerHTML += initialMessageField();
         let response = await fetch("/chat/", {
           method: "POST",
           body: fd,
         });
         let data = await response.json();
         let formattedData = JSON.parse(data);
-        console.log(formattedData);
         document.getElementById("deleteMessage").remove();
-        console.log("success");
         messageContainer.innerHTML += `
       <div class=" message {% if current_user == request.user %}from-current-user{% endif %} {% if current_user != request.user %}not-from-current-user{% endif %}">
           <div class="message-field">
@@ -109,43 +95,61 @@
           </div>
         </div>
       `;
-        messagefield.value = "";
       }
     } catch (error) {
       console.log("error " + error);
     }
+    messagefield.value = "";
   };
 
+  const initialMessageField = () => {
+    return `
+        <div id="deleteMessage" class="color-grey message
+        {% if message.author == request.user %}from-current-user{% endif %} {% if message.author != request.user %}not-from-current-user{% endif %}">
+          <div class="message-field">
+            <span class="author-field">
+              {{request.user.username}}:
+            </span>
+            <i class="text-field">
+              &nbsp; ${messagefield.value}</i>
+          </div>
+          <div class="date-field">
+            [DATUM]
+          </div>
+        </div>
+  `;
+  };
 
-  const dateFormatting =(date) => {
-    let dateObject = new Date(date)
-    let formattedDate = dateObject.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    return formattedDate
-  }
+  const dateFormatting = (date) => {
+    let dateObject = new Date(date);
+    let formattedDate = dateObject.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    return formattedDate;
+  };
 </script>
 
 <form onsubmit="sendMessage(); return false;">
   {% csrf_token %}
-  <div class="demo-card-wide mdl-card mdl-shadow--2dp">
-    <div class="mdl-card__supporting-text">
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        <input
-          class="mdl-textfield__input"
-          type="text"
-          name="textmessage"
-          id="messagefield"
-        />
-        <label class="mdl-textfield__label" for="messagefield">Text...</label>
-      </div>
+  <div class="mdl-card__supporting-text">
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      <textarea    class="mdl-textfield__input"
+      type="text"
+      name="textmessage"
+      id="messagefield" rows= "5"></textarea>
+ 
+      <label class="mdl-textfield__label" for="messagefield">Text...</label>
     </div>
-    <div class="mdl-card__actions">
-      <button
-        type="submit"
-        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-      >
-        Send
-      </button>
-    </div>
+  </div>
+  <div class="mdl-card__actions">
+    <button
+      type="submit"
+      class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+    >
+      Send
+    </button>
   </div>
 </form>
 

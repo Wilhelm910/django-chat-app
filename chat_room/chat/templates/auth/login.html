@@ -1,54 +1,48 @@
-{% extends "base.html" %}
-{% block content %}
-
-
-{% if wrongPassword %}
-<p>Benutzername oder Passwort ist falsch.</p>
+{% extends "base.html" %} {% block content %} {% if wrongPassword %}
+<p>Username or password is wrong.</p>
 {% endif %}
+
+<style>
+  .new-width {
+    width: auto !important;
+  }
+</style>
 
 <form method="POST" action="/login/">
   {% csrf_token %}
   <div class="demo-card-wide mdl-card mdl-shadow--2dp">
     <div class="mdl-card__supporting-text">
-      <div
-        class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-      >
-      <input type="hidden" name="redirect" value={{redirect}}>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input type="hidden" name="redirect" value="{{redirect}}" />
         <input
           class="mdl-textfield__input"
           type="text"
           id="sample3"
           name="username"
         />
-        <label class="mdl-textfield__label" for="sample3"
-          >Username...</label
-        >
+        <label class="mdl-textfield__label" for="sample3">Username...</label>
       </div>
-      <div
-      class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-    >
-      <input
-        class="mdl-textfield__input"
-        type="password"
-        name="password"
-        id="sample3"
-      />
-      <label class="mdl-textfield__label" for="sample3"
-        >Password...</label
-      >
-    </div>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input
+          class="mdl-textfield__input"
+          type="password"
+          name="password"
+          id="sample3"
+        />
+        <label class="mdl-textfield__label" for="sample3">Password...</label>
+      </div>
     </div>
     <div class="mdl-card__actions">
       <button
         class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
       >
-       Login
+        Login
       </button>
     </div>
   </div>
-
 </form>
-
-<p>Kein Account? Dann registriere dich <a href="/create_user/">hier</a></p>
+<div class="mdl-card__supporting-text new-width">
+  No account? Registrate <a href="/create_user/">here</a>.
+</div>
 
 {% endblock %}

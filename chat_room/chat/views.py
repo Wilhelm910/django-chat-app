@@ -9,27 +9,17 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse
 from django.core import serializers
 
-# def create_user_view(request):
-#     #if request.method == "POST" and request.POST.get("username", "") and request.POST.get("email", "") and request.POST.get("password", ""):
-#     if request.method == "POST":
-#         form = UserCreationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             username = form.cleaned_data["username"]
-#             password = form.cleaned_data["password1"]
-#             user = authenticate(username=username, password=password)
-#             login(request,user)
-#             return redirect("/chat/")
-#         # user = User.objects.create_user(request.POST.get("username"), request.POST.get("email"), request.POST.get("password"))
-#         # user.save()
-#         # if user:
-#         #     return HttpResponseRedirect("/login/")
-#     else:
-#         form = UserCreationForm()
-#     return render(request, "create_user/create_user.html", {"form": form})
-
 
 def create_user_view(request):
+    """
+    View function for handling user registration.
+
+    If the request method is POST and the required 'username', 'email', and 'password' fields are provided,
+    creates a new user using the User model and redirects to the "/chat/" URL upon successful registration.
+
+    If the request method is not POST or the required fields are not provided, renders the 'create_user.html' template
+    to display the user registration form.
+    """
     if request.method == "POST" and request.POST.get("username", "") and request.POST.get("email", "") and request.POST.get("password", ""):
          if request.method == "POST":
             user = User.objects.create_user(request.POST.get("username"), request.POST.get("email"), request.POST.get("password"))
@@ -40,6 +30,20 @@ def create_user_view(request):
 
 
 def login_view(request):
+    """
+    View function for handling user login.
+
+    Retrieves the 'next' parameter from the GET request, indicating the intended redirect after successful login.
+
+    If the request method is POST and both 'username' and 'password' are provided in the POST data,
+    attempts to authenticate the user using the provided credentials.
+
+    If authentication is successful, logs in the user and redirects to the specified 'next' parameter or the default.
+    If authentication fails, renders the login page with an indication of a wrong password.
+
+    If the request method is not POST, or 'username' and 'password' are not provided, renders the login page
+    with the 'redirect' parameter to handle login form display.
+    """
     redirect=request.GET.get("next")
     if request.method == "POST" and request.POST.get("username", "") and request.POST.get("password", ""):
         user = authenticate(username=request.POST.get("username"), password=request.POST.get("password"))
@@ -54,6 +58,17 @@ def login_view(request):
 
 @login_required(login_url="/login/")
 def index(request):
+    """
+    View function for rendering the chat index page.
+
+    If the request method is POST and there is a non-empty 'textmessage' field in the request POST data,
+    it processes the incoming message, creates a new Message object, and returns a JSON response.
+    If the request method is not POST or the 'textmessage' field is empty, it prints a message.
+
+    It retrieves existing chat messages associated with Chat ID 1
+    and renders the 'chat/index.html' template, passing the messages and the current user to the template.
+
+    """
     if request.method == "POST" and request.POST.get("textmessage", ""):
         print("received data " + request.POST["textmessage"])
         newChat = Chat.objects.get(id=1)
@@ -67,6 +82,15 @@ def index(request):
 
 
 def logout_view(request):
+    """
+    View function for handling user logout.
+
+    Logs out the currently authenticated user using Django's 'logout' function.
+
+    Redirects the user to the login page ("/login/") with the 'next' parameter set to "/chat/"
+    to ensure the user is redirected to the chat page after a successful login.
+
+    """
     logout(request)
     return redirect("/login/?next=/chat/")
 
