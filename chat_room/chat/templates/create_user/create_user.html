@@ -2,6 +2,12 @@
 <p>Passwörter stimmen nicht überein.</p>
 {% endif %}
 
+<style>
+  .new-width {
+    width: auto !important;
+  }
+</style>
+
 <form method="POST">
   {% csrf_token %}
   <div class="demo-card-wide mdl-card mdl-shadow--2dp">
@@ -9,7 +15,7 @@
       <div
         class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
       >
-      <input type="hidden" name="redirect" value={{redirect}}>
+      <input required type="hidden" name="redirect" value={{redirect}}>
         <input
           class="mdl-textfield__input"
           type="text"
@@ -24,6 +30,7 @@
       class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
     >
       <input
+      required
         class="mdl-textfield__input"
         type="email"
         id="sample3"
@@ -37,6 +44,7 @@
       class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
     >
       <input
+      required
         class="mdl-textfield__input"
         type="password"
         name="password"
@@ -57,5 +65,8 @@
   </div>
 
 </form>
+<div class="mdl-card__supporting-text new-width">
+  Already have an account? Login <a href="/login/?next=/chat/">here</a>.
+</div>
 
 {% endblock %}

@@ -71,8 +71,13 @@ def index(request):
     """
     if request.method == "POST" and request.POST.get("textmessage", ""):
         print("received data " + request.POST["textmessage"])
-        newChat = Chat.objects.get(id=1)
-        new_message = Message.objects.create(text=request.POST["textmessage"], chat=newChat, author=request.user, receiver=request.user)
+        chat_id = 1
+        try:
+            existing_chat = Chat.objects.get(id=chat_id)
+        except Chat.DoesNotExist:
+            existing_chat = Chat.objects.create(id=chat_id)
+       # newChat = Chat.objects.get(id=1)
+        new_message = Message.objects.create(text=request.POST["textmessage"], chat=existing_chat, author=request.user, receiver=request.user)
         serialized_obj = serializers.serialize('json', [ new_message, ])
         return JsonResponse(serialized_obj[1:-1], safe=False)
     else:
