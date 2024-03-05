@@ -67,18 +67,21 @@
 
 <script>
   const sendMessage = async () => {
+    let chat_id = window.location.pathname.split("/")[2]
     let fd = new FormData();
     let token = "{{csrf_token}}";
+    fd.append("chat_id", chat_id)
     fd.append("textmessage", messagefield.value);
     fd.append("csrfmiddlewaretoken", token);
     try {
       if (messagefield.value) {
         messageContainer.innerHTML += initialMessageField();
-        let response = await fetch("/chat/", {
+        let response = await fetch(`/chat/${chat_id}/`, {
           method: "POST",
           body: fd,
         });
         let data = await response.json();
+        console.log(data)
         let formattedData = JSON.parse(data);
         document.getElementById("deleteMessage").remove();
         messageContainer.innerHTML += `

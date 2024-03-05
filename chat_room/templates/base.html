@@ -47,11 +47,26 @@
               >
                 Logout
               </button></a
-            >    
+            >
             {% endif %}
           </nav>
         </div>
       </header>
+      <div class="mdl-layout__drawer">
+        <span class="mdl-layout-title">Chat Rooms</span>
+        <a href="/create_chat">
+          <button
+            class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent"
+          >
+            Create a new chat
+          </button>
+        </a>
+        <nav class="mdl-navigation">
+          {% for chat in chats %}
+          <a class="mdl-navigation__link" href="/chat/{{chat.id}}/">{{chat.title}}</a>
+          {% endfor %}
+        </nav>
+      </div>
       <main class="mdl-layout__content">
         <div class="page-content">{% block content %} {% endblock %}</div>
       </main>

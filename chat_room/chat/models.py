@@ -5,6 +5,7 @@ from django.conf import settings
 
 # Create your models here.
 class Chat(models.Model):
+    title = models.CharField(max_length=50, default="Default Title")
     created_at = DateField(default=date.today)
 
 

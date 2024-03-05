@@ -57,7 +57,7 @@ def login_view(request):
 
 
 @login_required(login_url="/login/")
-def index(request):
+def index(request, chat_id=None):
     """
     View function for rendering the chat index page.
 
@@ -69,22 +69,50 @@ def index(request):
     and renders the 'chat/index.html' template, passing the messages and the current user to the template.
 
     """
+    chat = None
+    chatMessages = None
+    print(chat_id)
+    if chat_id is None:
+        if not Chat.objects.exists():
+            return redirect("/create_chat/")
+        chats = Chat.objects.all()[0]
+        # REDIRECT TO "/chat/first chat id in my chats objects"
+        return redirect(f"/chat/{chats.id}/")
+    if chat_id is not None:
+      
+        chat = Chat.objects.get(id=chat_id)
     if request.method == "POST" and request.POST.get("textmessage", ""):
         print("received data " + request.POST["textmessage"])
-        chat_id = 1
-        try:
-            existing_chat = Chat.objects.get(id=chat_id)
-        except Chat.DoesNotExist:
-            existing_chat = Chat.objects.create(id=chat_id)
+        # chat_id = 1
+        # try:
+        #     existing_chat = Chat.objects.get(id=chat_id)
+        # except Chat.DoesNotExist:
+        #     existing_chat = Chat.objects.create(id=chat_id)
        # newChat = Chat.objects.get(id=1)
-        new_message = Message.objects.create(text=request.POST["textmessage"], chat=existing_chat, author=request.user, receiver=request.user)
+        new_message = Message.objects.create(text=request.POST["textmessage"], chat=chat, author=request.user, receiver=request.user)
         serialized_obj = serializers.serialize('json', [ new_message, ])
         return JsonResponse(serialized_obj[1:-1], safe=False)
     else:
         print("Input field empty or not POST method")
-    chatMessages = Message.objects.filter(chat__id=1)
-    return render(request, "chat/index.html", {"messages": chatMessages, "current_user": request.user})
+    chatMessages = Message.objects.filter(chat__id=chat_id)
+    chats = Chat.objects.all()
+    return render(request, "chat/index.html", {"messages": chatMessages, "current_user": request.user, 'chats': chats})
 
+
+def chat_messages(request, chat_id):
+    chat = Chat.objects.get(id=chat_id)
+    chat_messages = Message.objects.filter(chat=chat)
+    return render(request, 'chat/chat_messages.html', {'messages': chat_messages, 'current_user': request.user, 'chat': chat})
+
+
+def create_chat(request):
+    if request.method == "POST":
+        chat_title = request.POST.get("chat_title", "")
+        new_chat = Chat.objects.create(title=chat_title)
+        return redirect(f"/chat/{new_chat.id}/")
+    chats = Chat.objects.all()
+    return render(request, "create_chat/create_chat.html", {'chats': chats})
+      
 
 def logout_view(request):
     """
@@ -98,4 +126,5 @@ def logout_view(request):
     """
     logout(request)
     return redirect("/login/?next=/chat/")
+
 
